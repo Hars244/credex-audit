@@ -52,3 +52,48 @@
 - Improve overall UI and visual polish
 - Add localStorage persistence to the form
 - Improve audit recommendation quality
+
+## Day 3 — 2026-05-23
+
+**Hours worked:** 4
+
+**What I did:**
+- Completely redesigned the home page with better hero section,
+  animated pulse badge, stats section and improved form UX
+- Built a reusable Navbar component with SpendScan branding
+- Updated layout.tsx to wrap all pages with the Navbar automatically
+- Rebuilt the results page from scratch with a professional layout:
+  - Big savings hero showing monthly + annual savings
+  - Percentage badge showing savings vs current spend
+  - Summary stats row (current spend, optimised spend, tools audited)
+  - Credex consultation banner for high-value audits (>$500/mo savings)
+  - Per-tool breakdown cards with recommended action + reasoning
+  - Tools audited summary section
+  - Shareable URL with copy button and "Copied!" feedback
+- Added input validation — shows error if no monthly spend entered
+- Added localStorage persistence so form data survives page refresh
+- Tested full flow with real data: Cursor Business + ChatGPT Team
+  triggering $60/mo ($720/year) in savings recommendations
+
+**What I learned:**
+- How layout.tsx in Next.js wraps every single page automatically —
+  adding Navbar there means I never have to add it to each page
+- How the reduce() array method works to sum up values from objects
+- How to give instant UI feedback using useState with setTimeout
+  (the Copy button changing to "Copied!" for 2 seconds)
+- How percentage calculations work in savings context
+- Why separating UI into components (Navbar.tsx) makes code cleaner
+  and easier to maintain
+
+**Blockers / what I'm stuck on:**
+- The AI summary section is not built yet — need Anthropic API key
+- Lead capture form not built yet — users cannot submit their email
+- Need to verify all pricing numbers against official vendor pages
+  before submission
+
+**Plan for tomorrow:**
+- Get Anthropic API key (free credits available)
+- Build AI-generated summary using Anthropic API
+- Add graceful fallback if API fails
+- Write the prompt in PROMPTS.md as assignment requires
+
