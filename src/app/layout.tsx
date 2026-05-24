@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
-import { Geist } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 
-const geist = Geist({ subsets: ['latin'] });
+const geist = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'SpendScan — Free AI Tool Spend Audit',

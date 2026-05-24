@@ -97,3 +97,58 @@
 - Add graceful fallback if API fails
 - Write the prompt in PROMPTS.md as assignment requires
 
+## Day 4 — 2026-05-24
+
+**Hours worked:** 4
+
+**What I did:**
+- Got Anthropic API key from console.anthropic.com
+- Built AI summary API route at /api/summary
+- Integrated @anthropic-ai/sdk into the project
+- Wrote two prompts — one for savings found case,
+  one for already-optimal case
+- Added graceful fallback when API fails —
+  templated summary generated from audit data
+- Added AI summary section to results page with
+  loading spinner and "Powered by Claude" badge
+- Created PROMPTS.md documenting all prompts,
+  reasoning, and what did not work
+- Fixed Turbopack panic bug — downgraded from
+  Next.js 16 to Next.js 14 (stable webpack bundler)
+- Fixed next.config.ts to next.config.js (Next.js 14
+  does not support TypeScript config files)
+- Fixed font import — Geist not available in
+  Next.js 14, switched to Inter which looks similar
+- Diagnosed MongoDB SRV DNS timeout — college WiFi
+  blocks SRV record lookups, fixed by using
+  mobile hotspot
+- Tested full flow end-to-end on hotspot with
+  AI summary working correctly
+
+**What I learned:**
+- How to write effective prompts — giving Claude
+  a specific role, real data, and format constraints
+  produces much better output than vague prompts
+- How graceful API fallbacks work — always have
+  a backup when calling external services
+- ETIMEOUT on MongoDB SRV means the network is
+  blocking DNS SRV record lookup — not a code bug
+- Next.js 14 does not support next.config.ts —
+  must use next.config.js
+- Turbopack is Next.js 16 default bundler but
+  unstable in some environments — downgrading to
+  Next.js 14 uses webpack which is battle-tested
+- React 19 is incompatible with Next.js 14 —
+  had to downgrade React to 18.3.1 as well
+
+**Blockers / what I'm stuck on:**
+- College WiFi blocks MongoDB SRV DNS — must use
+  hotspot for development
+- Will test Anthropic API on stable connection
+  to confirm real Claude output vs fallback
+
+**Plan for tomorrow:**
+- Build lead capture form after results page
+- Set up Resend for transactional emails
+- Store leads in MongoDB with isHighValue flag
+- Add honeypot spam protection

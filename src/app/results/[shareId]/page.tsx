@@ -38,6 +38,8 @@ export default function ResultsPage() {
   const [audit, setAudit] = useState<AuditData | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [aiSummary, setAiSummary] = useState('');
+  const [summaryLoading, setSummaryLoading] = useState(false);
 
   useEffect(() => {
     const fetchAudit = async () => {
@@ -45,6 +47,43 @@ export default function ResultsPage() {
         const res = await fetch(`/api/audit/${shareId}`);
         const data = await res.json();
         setAudit(data);
+
+        // After getting audit data, fetch AI summary
+        setSummaryLoading(true);
+        try {
+          const summaryRes = await fetch('/api/summary', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              tools: data.tools,
+              teamSize: data.teamSize,
+              useCase: data.useCase,
+              totalMonthlySavings: data.totalMonthlySavings,
+              totalAnnualSavings: data.totalAnnualSavings,
+              recommendations: data.recommendations,
+              isOptimal: data.totalMonthlySavings === 0,
+            }),
+          });
+          const summaryData = await summaryRes.json();
+
+          if (summaryData.summary) {
+            setAiSummary(summaryData.summary);
+          } else {
+            // Fallback summary if API fails
+            setAiSummary(
+              data.totalMonthlySavings > 0
+                ? `Your team is currently spending $${data.tools.reduce((s: number, t: { monthlySpend: number }) => s + t.monthlySpend, 0)}/month on AI tools with $${data.totalMonthlySavings}/month in identified savings. The key opportunity is optimising your plan selection to better match your actual team size and use case. Implementing these changes could save your team $${data.totalAnnualSavings} annually.`
+                : `Your team's AI tool setup looks well-optimised for your current size and use case. You're on the right plans with a reasonable spend profile. As you scale, revisit this audit to ensure your plan tiers still match your usage patterns.`
+            );
+          }
+        } catch {
+          setAiSummary(
+            `Your AI spend audit is complete. Review the recommendations above to optimise your monthly spend.`
+          );
+        } finally {
+          setSummaryLoading(false);
+        }
+
       } catch (err) {
         console.error(err);
       } finally {
@@ -55,13 +94,13 @@ export default function ResultsPage() {
   }, [shareId]);
 
   const handleCopy = async () => {
-  await navigator.clipboard.writeText(
-    `${window.location.origin}/results/${shareId}`
-  );
+    await navigator.clipboard.writeText(
+      `${window.location.origin}/results/${shareId}`
+    );
 
-  setCopied(true);
-  setTimeout(() => setCopied(false), 2000);
-};
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   if (loading) {
     return (
@@ -196,7 +235,31 @@ export default function ResultsPage() {
             </div>
           </div>
         )}
+        {/* AI SUMMARY */}
+        <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-6 h-6 bg-green-500/20 rounded-md flex items-center justify-center">
+              <span className="text-xs">✦</span>
+            </div>
+            <p className="text-sm font-medium text-gray-300">
+              AI-generated summary
+            </p>
+            <span className="text-xs text-gray-600 bg-gray-800 px-2 py-0.5 rounded-full">
+              Powered by Claude
+            </span>
+          </div>
 
+          {summaryLoading ? (
+            <div className="flex items-center gap-3">
+              <div className="w-4 h-4 border-2 border-green-500 border-t-transparent rounded-full animate-spin flex-shrink-0" />
+              <p className="text-gray-500 text-sm">Generating personalised summary...</p>
+            </div>
+          ) : (
+            <p className="text-gray-300 text-sm leading-relaxed">
+              {aiSummary}
+            </p>
+          )}
+        </div>
         {/* RECOMMENDATIONS */}
         <div className="mb-10">
           <h2 className="text-lg font-semibold text-gray-100 mb-1">
@@ -295,11 +358,10 @@ export default function ResultsPage() {
             />
             <button
               onClick={handleCopy}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                copied
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${copied
                   ? 'bg-green-500 text-black'
                   : 'bg-gray-700 hover:bg-gray-600 text-white'
-              }`}
+                }`}
             >
               {copied ? 'Copied!' : 'Copy'}
             </button>
