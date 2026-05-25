@@ -40,6 +40,12 @@ export default function ResultsPage() {
   const [copied, setCopied] = useState(false);
   const [aiSummary, setAiSummary] = useState('');
   const [summaryLoading, setSummaryLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [role, setRole] = useState('');
+  const [leadSubmitted, setLeadSubmitted] = useState(false);
+  const [leadLoading, setLeadLoading] = useState(false);
+  const [leadError, setLeadError] = useState('');
 
   useEffect(() => {
     const fetchAudit = async () => {
@@ -339,7 +345,139 @@ export default function ResultsPage() {
             ))}
           </div>
         </div>
+        {/* LEAD CAPTURE FORM */}
+        <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 mb-6">
+          {leadSubmitted ? (
+            <div className="text-center py-4">
+              <div className="w-12 h-12 bg-green-500/10 border border-green-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <span className="text-2xl">✓</span>
+              </div>
+              <p className="text-white font-semibold mb-1">
+                Report sent to your inbox!
+              </p>
+              <p className="text-gray-400 text-sm">
+                {audit.isHighValue
+                  ? 'Our team will reach out about Credex credits shortly.'
+                  : 'We will notify you when new optimisations apply to your stack.'}
+              </p>
+            </div>
+          ) : (
+            <>
+              <h3 className="font-semibold text-white mb-1">
+                {audit.isHighValue
+                  ? '📩 Get your full report + Credex consultation'
+                  : '📩 Save your audit report'}
+              </h3>
+              <p className="text-gray-400 text-sm mb-4">
+                {audit.isHighValue
+                  ? 'Enter your email and our team will reach out about how Credex credits can save you even more.'
+                  : 'Get a copy of this report in your inbox and be notified when new savings opportunities appear.'}
+              </p>
 
+              <div className="space-y-3">
+                <input
+                  type="email"
+                  placeholder="you@company.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-green-500/50"
+                />
+
+                <div className="grid grid-cols-2 gap-3">
+                  <input
+                    type="text"
+                    placeholder="Company name (optional)"
+                    value={companyName}
+                    onChange={(e) => setCompanyName(e.target.value)}
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-green-500/50"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Your role (optional)"
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-green-500/50"
+                  />
+                </div>
+
+                {/* HONEYPOT — hidden from real users, bots fill it */}
+                <input
+                  type="text"
+                  name="website"
+                  style={{ display: 'none' }}
+                  tabIndex={-1}
+                  autoComplete="off"
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      console.log('Bot detected');
+                    }
+                  }}
+                />
+
+                {leadError && (
+                  <p className="text-red-400 text-sm">{leadError}</p>
+                )}
+
+                <button
+                  onClick={async () => {
+                    if (!email) {
+                      setLeadError('Please enter your email.');
+                      return;
+                    }
+                    setLeadError('');
+                    setLeadLoading(true);
+                    try {
+                      const honeypotEl = document.querySelector(
+                        'input[name="website"]'
+                      ) as HTMLInputElement;
+
+                      const res = await fetch('/api/leads', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                          email,
+                          companyName,
+                          role,
+                          teamSize: audit.teamSize,
+                          auditId: shareId,
+                          totalMonthlySavings: audit.totalMonthlySavings,
+                          honeypot: honeypotEl?.value || '',
+                        }),
+                      });
+                      const data = await res.json();
+                      if (data.success) {
+                        setLeadSubmitted(true);
+                      } else {
+                        setLeadError(data.error || 'Something went wrong.');
+                      }
+                    } catch {
+                      setLeadError('Something went wrong. Please try again.');
+                    } finally {
+                      setLeadLoading(false);
+                    }
+                  }}
+                  disabled={leadLoading}
+                  className="w-full bg-green-500 hover:bg-green-400 disabled:bg-green-800 disabled:cursor-not-allowed text-black font-semibold py-3 rounded-xl text-sm transition-colors"
+                >
+                  {leadLoading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <span className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                      Sending...
+                    </span>
+                  ) : audit.isHighValue ? (
+                    'Get Report + Book Credex Consultation →'
+                  ) : (
+                    'Send Report to My Inbox →'
+                  )}
+                </button>
+
+                <p className="text-center text-gray-600 text-xs">
+                  No spam. Unsubscribe anytime.
+                </p>
+              </div>
+            </>
+          )}
+        </div>
         {/* SHARE */}
         <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 mb-8">
           <p className="text-sm font-medium text-gray-300 mb-1">
@@ -359,8 +497,8 @@ export default function ResultsPage() {
             <button
               onClick={handleCopy}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${copied
-                  ? 'bg-green-500 text-black'
-                  : 'bg-gray-700 hover:bg-gray-600 text-white'
+                ? 'bg-green-500 text-black'
+                : 'bg-gray-700 hover:bg-gray-600 text-white'
                 }`}
             >
               {copied ? 'Copied!' : 'Copy'}

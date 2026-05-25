@@ -152,3 +152,78 @@
 - Set up Resend for transactional emails
 - Store leads in MongoDB with isHighValue flag
 - Add honeypot spam protection
+
+## Day 5 — 2026-05-25
+
+**Hours worked:** 4
+
+**What I did:**
+- Built lead capture form on results page with
+  email, company name, and role fields
+- Created /api/leads POST route to handle
+  lead submission and storage in MongoDB
+- Stored leads in MongoDB with isHighValue flag
+  which is true when savings exceed $500/mo
+- Set up Resend for transactional emails —
+  sends audit report confirmation email to user
+- Built two different email templates:
+  high-value (>$500/mo savings) shows Credex
+  consultation offer, low-value shows
+  notification signup message
+- Added honeypot spam protection — hidden input
+  field that real users never see or fill,
+  bots automatically fill everything they see
+- Added email format validation using regex
+  before saving to database
+- Tested full flow end to end — lead saved to
+  MongoDB Atlas, confirmation message shown on
+  screen, email delivered to inbox confirmed
+- Form switches to success state after submission
+  instead of staying on the empty form
+- Different CTA text for high vs low value audits:
+  high value shows "Get Report + Book Credex
+  Consultation", low value shows "Send Report
+  to My Inbox"
+
+**What I learned:**
+- How transactional emails work — different from
+  marketing emails, triggered by user action,
+  one email per event not bulk campaigns
+- How honeypot spam protection works — much
+  simpler than captcha with zero UX friction
+  for real users. Bots fill all fields they
+  find including hidden ones. If honeypot field
+  has any value, we silently reject the request
+  but return success so bots think they worked
+- Resend free tier only sends to the verified
+  account email address — need to verify a
+  custom domain at resend.com/domains to send
+  to any email in production
+- How to write HTML email templates as strings
+  in TypeScript with inline CSS for email
+  client compatibility
+- How isHighValue flag changes the entire CTA
+  experience — different heading, different
+  body text, different button text, different
+  email template. Personalisation matters.
+- Why email is captured AFTER showing value —
+  the assignment specifically required this.
+  Users see their savings first, then decide
+  to share their email. This is the right
+  product pattern for conversion.
+
+**Blockers / what I'm stuck on:**
+- Resend free tier restricts sending to only
+  the verified account email. In production
+  this is fixed by verifying a custom domain
+  at resend.com/domains. This limitation is
+  documented and understood — not a code bug.
+
+**Plan for tomorrow:**
+- Deploy app on Vercel so it has a live URL
+- Set up GitHub Actions CI/CD pipeline that
+  runs lint and tests on every push to main
+- Write minimum 5 automated tests for the
+  audit engine as required by assignment
+- Create TESTS.md listing all tests
+- Create PRICING_DATA.md with all sources
