@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import Link from 'next/link';
 
 interface Recommendation {
   toolName: string;
@@ -124,9 +125,9 @@ export default function ResultsPage() {
       <div className="min-h-screen bg-gray-950 flex items-center justify-center">
         <div className="text-center">
           <p className="text-gray-400 mb-4">Audit not found.</p>
-          <a href="/" className="text-green-400 hover:underline text-sm">
+          <link href="/" className="text-green-400 hover:underline text-sm">
             Run a new audit →
-          </a>
+          </link>
         </div>
       </div>
     );
@@ -153,7 +154,7 @@ export default function ResultsPage() {
                 <span className="text-3xl">✓</span>
               </div>
               <h1 className="text-4xl font-bold text-green-400 mb-3">
-                You're spending well
+                You&apos;re spending well
               </h1>
               <p className="text-gray-400 max-w-md mx-auto">
                 No significant savings found. Your current AI tool setup looks
@@ -181,7 +182,7 @@ export default function ResultsPage() {
 
               {savingsPercent > 0 && (
                 <div className="inline-block bg-green-500/10 border border-green-500/20 text-green-400 text-sm px-4 py-1.5 rounded-full">
-                  That's {savingsPercent}% of your current AI spend
+                  That&apos;s {savingsPercent}% of your current AI spend
                 </div>
               )}
             </div>
@@ -507,12 +508,12 @@ export default function ResultsPage() {
         </div>
 
         <div className="text-center">
-          <a
+          <link
             href="/"
             className="text-gray-500 hover:text-gray-300 text-sm transition-colors"
           >
             ← Run another audit
-          </a>
+          </link>
         </div>
 
       </div>
