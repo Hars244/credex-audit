@@ -42,7 +42,7 @@ interface ToolEntry {
 const emptyTool = (): ToolEntry => ({
   name: 'cursor',
   plan: 'pro',
-  monthlySpend: 20,
+  monthlySpend: 0,
   seats: 1,
 });
 
@@ -68,7 +68,7 @@ export default function Home() {
         setTools(data.tools || [emptyTool()]);
         setTeamSize(data.teamSize || 3);
         setUseCase(data.useCase || 'coding');
-      } catch {}
+      } catch { }
     }
   }, []);
 
@@ -82,7 +82,11 @@ export default function Home() {
   const updateTool = (index: number, field: keyof ToolEntry, value: string | number) => {
     const updated = [...tools];
     if (field === 'name') {
-      updated[index] = { ...updated[index], name: value as string, plan: PLANS[value as string][0] };
+      updated[index] = {
+        ...updated[index],
+        name: value as string,
+        plan: PLANS[value as string][0],
+      };
     } else {
       updated[index] = { ...updated[index], [field]: value };
     }
@@ -175,6 +179,7 @@ export default function Home() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
+                  {/* TOOL NAME */}
                   <div>
                     <label className="text-xs text-gray-500 mb-1 block">Tool</label>
                     <select
@@ -188,6 +193,7 @@ export default function Home() {
                     </select>
                   </div>
 
+                  {/* PLAN */}
                   <div>
                     <label className="text-xs text-gray-500 mb-1 block">Plan</label>
                     <select
@@ -203,26 +209,54 @@ export default function Home() {
                     </select>
                   </div>
 
+                  {/* SEATS */}
+                  {/* SEATS */}
                   <div>
-                    <label className="text-xs text-gray-500 mb-1 block">Seats / users</label>
+                    <label className="text-xs text-gray-500 mb-1 block">
+                      Seats / users
+                    </label>
                     <input
-                      type="number"
-                      min={1}
-                      value={tool.seats}
-                      onChange={(e) => updateTool(index, 'seats', parseInt(e.target.value) || 1)}
+                      type="text"
+                      inputMode="numeric"
+                      value={tool.seats === 0 ? '' : tool.seats}
+                      placeholder="1"
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/[^0-9]/g, '');
+                        updateTool(index, 'seats', val === '' ? 0 : parseInt(val));
+                      }}
+                      onBlur={() => {
+                        if (!tool.seats || tool.seats < 1) {
+                          updateTool(index, 'seats', 1);
+                        }
+                      }}
+                      onFocus={(e) => e.target.select()}
                       className="w-full bg-gray-700/80 border border-gray-600/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-green-500/50"
                     />
                   </div>
 
+                  {/* MONTHLY SPEND */}
                   <div>
-                    <label className="text-xs text-gray-500 mb-1 block">Monthly spend (USD)</label>
+                    <label className="text-xs text-gray-500 mb-1 block">
+                      Monthly spend (USD)
+                    </label>
                     <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">$</span>
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
+                        $
+                      </span>
                       <input
-                        type="number"
-                        min={0}
-                        value={tool.monthlySpend}
-                        onChange={(e) => updateTool(index, 'monthlySpend', parseFloat(e.target.value) || 0)}
+                        type="text"
+                        inputMode="decimal"
+                        value={tool.monthlySpend === 0 ? '' : tool.monthlySpend}
+                        placeholder="0"
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/[^0-9.]/g, '');
+                          updateTool(
+                            index,
+                            'monthlySpend',
+                            val === '' ? 0 : parseFloat(val) || 0
+                          );
+                        }}
+                        onFocus={(e) => e.target.select()}
                         className="w-full bg-gray-700/80 border border-gray-600/50 rounded-lg pl-7 pr-3 py-2 text-sm text-white focus:outline-none focus:border-green-500/50"
                       />
                     </div>
@@ -232,6 +266,7 @@ export default function Home() {
             ))}
           </div>
 
+          {/* ADD TOOL BUTTON */}
           <button
             onClick={addTool}
             className="mt-3 w-full border border-dashed border-gray-700 hover:border-green-500/50 rounded-xl py-3 text-gray-500 hover:text-green-400 transition-all text-sm"
@@ -239,20 +274,30 @@ export default function Home() {
             + Add another tool
           </button>
 
-          {/* TEAM + USE CASE */}
+          {/* TEAM SIZE + USE CASE */}
           <div className="grid grid-cols-2 gap-4 mt-6">
             <div>
               <label className="text-sm text-gray-400 mb-1 block">Team size</label>
               <input
-                type="number"
-                min={1}
-                value={teamSize}
-                onChange={(e) => setTeamSize(parseInt(e.target.value) || 1)}
+                type="text"
+                inputMode="numeric"
+                value={teamSize === 0 ? '' : teamSize}
+                placeholder="1"
+                onChange={(e) => {
+                  const val = e.target.value.replace(/[^0-9]/g, '');
+                  setTeamSize(val === '' ? 0 : parseInt(val));
+                }}
+                onBlur={() => {
+                  if (!teamSize || teamSize < 1) setTeamSize(1);
+                }}
+                onFocus={(e) => e.target.select()}
                 className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-green-500/50"
               />
             </div>
             <div>
-              <label className="text-sm text-gray-400 mb-1 block">Primary use case</label>
+              <label className="text-sm text-gray-400 mb-1 block">
+                Primary use case
+              </label>
               <select
                 value={useCase}
                 onChange={(e) => setUseCase(e.target.value)}
@@ -273,6 +318,7 @@ export default function Home() {
             </div>
           )}
 
+          {/* SUBMIT BUTTON */}
           <button
             onClick={handleSubmit}
             disabled={loading}
