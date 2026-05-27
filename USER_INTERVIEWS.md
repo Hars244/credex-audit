@@ -1,4 +1,4 @@
-## Interview 3 — The CSE Associate Professor
+## Interview — The CSE Associate Professor
 
 **Profile:**  
 Associate Professor in Computer Science Engineering. Uses AI for academic research and writing while remaining highly concerned about ethics and privacy.
