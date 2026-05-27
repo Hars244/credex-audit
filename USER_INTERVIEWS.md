@@ -1,5 +1,3 @@
-# USER_INTERVIEWS.md
-
 ## Interview 1 — The “Power User” CSE Student
 
 **Profile:**  
@@ -147,18 +145,3 @@ Associate Professor in Computer Science Engineering. Uses AI for academic resear
 - Even institutional AI access often fails to satisfy advanced users
 
 ---
-
-# Overall Insights Across Interviews
-
-### Common Patterns
-- Most users underestimate their total AI spending
-- Subscription overlap is very common
-- Users continue paying because AI tools feel essential to productivity
-- Privacy concerns appeared in all three interviews
-
-### Strongest Insight
-Users do not necessarily want more AI tools — they want clarity around whether their current subscriptions are actually worth the cost.
-
-### Product Validation
-All three interviews validated the core idea behind the project:
-people suspect they are overspending on AI tools but currently lack a simple and trustworthy way to evaluate or optimize that spending.
