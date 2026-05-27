@@ -65,9 +65,11 @@ export default function Home() {
     if (saved) {
       try {
         const data = JSON.parse(saved);
+        Promise.resolve().then(() => {
         setTools(data.tools || [emptyTool()]);
         setTeamSize(data.teamSize || 3);
         setUseCase(data.useCase || 'coding');
+        });
       } catch { }
     }
   }, []);
