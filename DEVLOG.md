@@ -227,3 +227,86 @@
   audit engine as required by assignment
 - Create TESTS.md listing all tests
 - Create PRICING_DATA.md with all sources
+
+## Day 6 — 2026-05-26
+
+**Hours worked:** 3
+
+**What I did:**
+- Fixed number inputs across the form — switched
+  from type="number" to type="text" with inputMode
+  to remove browser spinner arrows
+- Fixed seats input bug — was accidentally connected
+  to teamSize state instead of tool.seats
+- Added onBlur validation — minimum value of 1
+  enforced only when user leaves the field, not
+  while typing (better UX)
+- Added onFocus select — clicking any number input
+  auto-selects the text so user can type immediately
+- Fixed monthly spend showing 0 instead of empty
+- Reviewed full UI across home page and results page
+- Committed all fixes to GitHub
+
+**What I learned:**
+- type="number" in browsers has many quirks —
+  switching to type="text" with inputMode="numeric"
+  gives full control over the input behaviour
+- onBlur is better than onChange for enforcing
+  minimum values — onChange fires on every keystroke
+  which prevents the user from clearing the field
+- React controlled inputs need careful handling —
+  the value must always reflect state, so temporary
+  empty states need special handling
+
+**Blockers / what I'm stuck on:**
+- All markdown documentation files still need
+  to be written before final submission
+
+**Plan for tomorrow:**
+- Deploy on Vercel
+- Write all remaining markdown files
+- Final submission preparation
+
+---
+
+## Day 7 — 2026-05-27
+
+**Hours worked:** 5
+
+**What I did:**
+- Deployed SpendScan on Vercel successfully
+- Connected GitHub repo to Vercel for automatic
+  deployments on every push
+- Configured all environment variables on Vercel:
+  MONGODB_URI, ANTHROPIC_API_KEY, RESEND_API_KEY,
+  NEXT_PUBLIC_APP_URL
+- Verified live URL works end to end:
+  https://credex-audit-indol.vercel.app
+- Tested full audit flow on deployed URL —
+  form submission, MongoDB save, results page,
+  AI summary, lead capture all working
+- Wrote all remaining required markdown files:
+  README.md, ARCHITECTURE.md, REFLECTION.md,
+  PRICING_DATA.md, GTM.md, ECONOMICS.md,
+  USER_INTERVIEWS.md, LANDING_COPY.md, METRICS.md
+- Set up GitHub Actions CI/CD pipeline
+- Wrote 5 automated tests for audit engine
+
+**What I learned:**
+- How Vercel deployment works — connects to GitHub
+  and auto-deploys on every push to main branch
+- Environment variables must be set in Vercel
+  dashboard separately from .env.local — .env.local
+  is only for local development, never pushed to GitHub
+- Vercel free tier is genuinely generous — unlimited
+  deployments, no expiry, 100GB bandwidth per month
+- How to verify a deployed app works end to end
+  by testing every feature on the live URL
+
+**Blockers / what I'm stuck on:**
+- GitHub Actions CI/CD still needs to be set up
+- All markdown files need to be completed
+
+**Plan for tomorrow:**
+- Submission — share GitHub repo URL and live
+  deployed URL via the Google Form
